@@ -106,6 +106,8 @@ void freeProcess(pcb *process)
   {
     pipeClose(process->fileDescriptors[0]);
   }
+  
+  freeQueue(process->mallocList);
 
   pidCounter -= currentProcessPCB->pid == (pidCounter - 1);
   // Previamente se hizo malloc en el stack del proceso
@@ -199,6 +201,7 @@ int startTask(void (*process)(int argc, char **argv), int argc, char **argv, int
   {
     newProcess->ppid = initPid;
   }
+  newProcess->mallocList = initQueue();
   return newProcess->pid;
 }
 
@@ -566,4 +569,22 @@ static int sendTaskToInit(int pid)
     killedProcess->ppid = initPid;
   }
   return 0;
+}
+
+void addMalloc(void *mem)
+{
+  if (mem != NULL)
+  {
+    enqueue(currentProcessPCB->mallocList, mem);
+  }
+}
+
+int removeMallocCondition(void *listElement, void *checkedElement)
+{
+  return listElement == checkedElement;
+}
+
+void freeMalloc(void *mem)
+{
+  removeElement(currentProcessPCB->mallocList, removeMallocCondition, mem);
 }

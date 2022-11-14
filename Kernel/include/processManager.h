@@ -39,6 +39,7 @@ typedef struct pcb
   int argc;
   char **argv;
   int semId;
+  queueADT mallocList;
 } pcb;
 
 typedef struct
@@ -124,5 +125,11 @@ int waitpid(int pid);
 
 // Define el pid del userland.
 int setUserlandPid(int pid);
+
+void addMalloc(void *mem);
+
+void freeMalloc(void *mem);
+
+int removeMallocCondition(void *listElement, void *checkedElement);
 
 #endif

@@ -48,6 +48,7 @@ void getMem(uint64_t direc, uint8_t *buffer, uint64_t bytes)
 
 uint64_t syscallHandler(syscallId rax, uint64_t arg0, uint64_t arg1, uint64_t arg2, uint64_t arg3, uint64_t arg4)
 {
+    void *mem;
     switch (rax)
     {
     case SYS_READ:
@@ -71,8 +72,11 @@ uint64_t syscallHandler(syscallId rax, uint64_t arg0, uint64_t arg1, uint64_t ar
         sleep((uint64_t)arg0);
         return 0;
     case SYS_MALLOC:
-        return (uint64_t)malloc(arg0);
+        mem = malloc(arg0);
+        addMalloc(mem);
+        return (uint64_t) mem;
     case SYS_FREE:
+        freeMalloc((void *)arg0);
         free((void *)arg0);
         return 0;
     case SYS_GETMEMINFO:

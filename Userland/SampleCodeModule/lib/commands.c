@@ -346,9 +346,20 @@ void echo(unsigned int argc, char *argv[])
 
 void loop()
 {
-  while (1)
+  /*while (1)
   {
     _fprintf("Hola soy %d\n", getpid());
     sleep(3);
-  }
+  }*/
+  // implementacion de proceso que no hace free para defensa
+
+  memDump();
+
+  void *firstMalloc = malloc(9100);
+  if(firstMalloc == NULL)
+    return;
+
+  memDump();
+  
+
 }
